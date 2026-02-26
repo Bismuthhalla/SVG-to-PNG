@@ -5,7 +5,6 @@ const app = express();
 app.get('/', (req, res) => {
   const p = Math.min(1, Math.max(0, parseFloat(req.query.p) || 0));
   
-  // Alta resolución (x3)
   const scale = 3;
   const W = 400, H = 60;
   const canvas = createCanvas(W * scale, H * scale);
@@ -16,15 +15,15 @@ app.get('/', (req, res) => {
   const porcentaje = Math.round(p * 100) + '%';
 
   let color, emoji;
-  if (p <= 0.16)      { color = '#FF3B30'; emoji = '🔴'; }
-  else if (p <= 0.33) { color = '#FF9500'; emoji = '🟠'; }
-  else if (p <= 0.50) { color = '#FFCC00'; emoji = '🟡'; }
-  else if (p <= 0.67) { color = '#d9ef9f'; emoji = '🌱'; }
-  else if (p <= 0.84) { color = '#b7cd7f'; emoji = '✅'; }
-  else                { color = '#4CD964'; emoji = '🏆'; }
+  if (p <= 0.16)      { color = '#FF3B30'; emoji = '😰'; }
+  else if (p <= 0.33) { color = '#FF9500'; emoji = '😕'; }
+  else if (p <= 0.50) { color = '#FFCC00'; emoji = '😐'; }
+  else if (p <= 0.67) { color = '#d9ef9f'; emoji = '🙂'; }
+  else if (p <= 0.84) { color = '#b7cd7f'; emoji = '😊'; }
+  else                { color = '#4CD964'; emoji = '😁'; }
 
-  // Fondo gris píldora
-  ctx.fillStyle = '#e0e0e0';
+  // Fondo oscuro píldora
+  ctx.fillStyle = '#3a3a3a';
   ctx.beginPath();
   ctx.roundRect(0, 0, W, H, H / 2);
   ctx.fill();
@@ -37,19 +36,20 @@ app.get('/', (req, res) => {
     ctx.fill();
   }
 
-  // Emoji al final de la barra
+  // Emoji en el borde de la barra
   if (p > 0) {
-    ctx.font = '22px Arial';
+    ctx.font = '28px Arial';
     ctx.textBaseline = 'middle';
-    ctx.fillText(emoji, anchoProgreso - 28, H / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(emoji, anchoProgreso + 4, H / 2);
   }
 
-  // Porcentaje pegado a la derecha de la barra
-  ctx.fillStyle = p > 0.3 ? '#ffffff' : '#555555';
-  ctx.font = 'bold 18px Arial';
-  ctx.textAlign = 'right';
+  // Porcentaje en blanco sobre fondo oscuro
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 20px Arial';
+  ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(porcentaje, anchoProgreso - 32, H / 2 + 1);
+  ctx.fillText(porcentaje, anchoProgreso + (W - anchoProgreso) / 2 + 16, H / 2);
 
   res.setHeader('Content-Type', 'image/png');
   canvas.createPNGStream().pipe(res);
